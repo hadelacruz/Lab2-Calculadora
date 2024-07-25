@@ -39,6 +39,15 @@ class CalculadoraTest {
         assertEquals(1400.0, result)
     }
 
+    @Test
+    fun testEvaluateWithExponentiation() {
+        val calculadora = Calculadora()
+        val infixExpression = "2 ^ 3 + 4"
+        val postfixExpression = calculadora.infixToPostfix(infixExpression)
+        val result = calculadora.evaluatePostfix(calculadora.stringToList(postfixExpression))
+        assertEquals(12.0, result)
+    }
+
 
 
 }
