@@ -108,21 +108,36 @@ object Converter {
     fun main(args: Array<String>) {
         val scanner = Scanner(System.`in`)
         val modifiedContent = StringBuilder()
+        var exit = false
 
-        print("Ingrese las expresiones infix presione 'Enter' 2 veces para convertir a postfix: ")
+        while (!exit) {
+            println("Menú:")
+            println("1. Agregar una expresión infix")
+            println("2. Salir")
+            print("Ingrese su opción: ")
 
-        while (true) {
-            val expresion = scanner.nextLine()
-            if (expresion.isBlank()) {
-                break
+            when (scanner.nextLine()) {
+                "1" -> {
+                    print("Ingrese la expresión infix: ")
+                    val expresion = scanner.nextLine()
+                    if (expresion.isNotBlank()) {
+                        val postfixExpression: String = infixToPostfix(expresion)
+                        val result = evaluatePostfix(stringToList(postfixExpression))
+                        modifiedContent.append(postfixExpression).append("\n")
+                        println("Resultado: $result")
+                    } else {
+                        println("Expresión vacía. Intente de nuevo.")
+                    }
+                }
+                "2" -> {
+                    exit = true
+                    println("Saliendo del programa.")
+                }
+                else -> {
+                    println("Opción no válida. Intente de nuevo.")
+                }
             }
-            val postfixExpression: String = infixToPostfix(expresion)
-            val result = evaluatePostfix(stringToList(postfixExpression))
-            modifiedContent.append(postfixExpression).append("\n")
-            println(result)
         }
-
-        println("Expresiones en formato postfix:")
-        println(modifiedContent.toString())
     }
+
 }
