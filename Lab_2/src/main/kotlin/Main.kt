@@ -1,5 +1,6 @@
 import java.util.Scanner
 import java.util.Stack
+import kotlin.math.*
 
 object Converter {
 
@@ -68,6 +69,38 @@ object Converter {
         return result.toString().trim()
     }
 
+    fun stringToList(expression: String): List<String> {
+        return expression.split(" ").filter { it.isNotEmpty() }
+    }
+
+    // Method to evaluate a postfix expression
+    fun evaluatePostfix(postfix: List<String>): Double {
+        val stack = Stack<Double>()
+
+        for (token in postfix) {
+            when {
+                token.toDoubleOrNull() != null -> stack.push(token.toDouble())
+                else -> {
+                    val b = stack.pop()
+                    val a = stack.pop()
+                    stack.push(when (token) {
+                        "+" -> a + b
+                        "-" -> a - b
+                        "*" -> a * b
+                        "/" -> a / b
+                        "^" -> a.pow(b)
+                        "sqrt" -> sqrt(b)
+                        "exp" -> exp(b)
+                        else -> throw IllegalArgumentException("Unknown operator: $token")
+                    })
+                }
+            }
+        }
+        return stack.pop()
+    }
+
+
+
     /**
      * Lee expresiones infix desde la terminal, las convierte a postfix y devuelve el contenido modificado.
      */
@@ -83,8 +116,10 @@ object Converter {
             if (expresion.isBlank()) {
                 break
             }
-            val postfixExpression = infixToPostfix(expresion)
+            val postfixExpression: String = infixToPostfix(expresion)
+            val result = evaluatePostfix(stringToList(postfixExpression))
             modifiedContent.append(postfixExpression).append("\n")
+            println(result)
         }
 
         println("Expresiones en formato postfix:")
