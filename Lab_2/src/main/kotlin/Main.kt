@@ -2,7 +2,7 @@ import java.util.Scanner
 import java.util.Stack
 import kotlin.math.*
 
-object Converter {
+class Calculadora {
 
     /**
      * Método para determinar la precedencia de un operador.
@@ -98,46 +98,43 @@ object Converter {
         }
         return stack.pop()
     }
+}
 
+/**
+ * Lee expresiones infix desde la terminal, las convierte a postfix y devuelve el contenido modificado.
+ */
+fun main() {
+    val calculadora = Calculadora()
+    val scanner = Scanner(System.`in`)
+    val modifiedContent = StringBuilder()
+    var exit = false
 
+    while (!exit) {
+        println("Menú:")
+        println("1. Agregar una expresión infix")
+        println("2. Salir")
+        print("Ingrese su opción: ")
 
-    /**
-     * Lee expresiones infix desde la terminal, las convierte a postfix y devuelve el contenido modificado.
-     */
-    @JvmStatic
-    fun main(args: Array<String>) {
-        val scanner = Scanner(System.`in`)
-        val modifiedContent = StringBuilder()
-        var exit = false
-
-        while (!exit) {
-            println("Menú:")
-            println("1. Agregar una expresión infix")
-            println("2. Salir")
-            print("Ingrese su opción: ")
-
-            when (scanner.nextLine()) {
-                "1" -> {
-                    print("Ingrese la expresión infix: ")
-                    val expresion = scanner.nextLine()
-                    if (expresion.isNotBlank()) {
-                        val postfixExpression: String = infixToPostfix(expresion)
-                        val result = evaluatePostfix(stringToList(postfixExpression))
-                        modifiedContent.append(postfixExpression).append("\n")
-                        println("Resultado: $result")
-                    } else {
-                        println("Expresión vacía. Intente de nuevo.")
-                    }
+        when (scanner.nextLine()) {
+            "1" -> {
+                print("Ingrese la expresión infix: ")
+                val expresion = scanner.nextLine()
+                if (expresion.isNotBlank()) {
+                    val postfixExpression: String = calculadora.infixToPostfix(expresion)
+                    val result = calculadora.evaluatePostfix(calculadora.stringToList(postfixExpression))
+                    modifiedContent.append(postfixExpression).append("\n")
+                    println("Resultado: $result")
+                } else {
+                    println("Expresión vacía. Intente de nuevo.")
                 }
-                "2" -> {
-                    exit = true
-                    println("Saliendo del programa.")
-                }
-                else -> {
-                    println("Opción no válida. Intente de nuevo.")
-                }
+            }
+            "2" -> {
+                exit = true
+                println("Saliendo del programa.")
+            }
+            else -> {
+                println("Opción no válida. Intente de nuevo.")
             }
         }
     }
-
 }
