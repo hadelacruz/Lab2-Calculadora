@@ -89,8 +89,6 @@ class Calculadora {
                         "*" -> a * b
                         "/" -> a / b
                         "^" -> a.pow(b)
-                        "sqrt" -> sqrt(b)
-                        "exp" -> exp(b)
                         else -> throw IllegalArgumentException("Unknown operator: $token")
                     })
                 }
@@ -98,6 +96,15 @@ class Calculadora {
         }
         return stack.pop()
     }
+
+    fun evaluate(expresion: String){
+        val modifiedContent = StringBuilder()
+        val postfixExpression: String = infixToPostfix(expresion)
+        val result = evaluatePostfix(stringToList(postfixExpression))
+        modifiedContent.append(postfixExpression).append("\n")
+        println("Resultado: $result")
+    }
+
 }
 
 /**
@@ -106,7 +113,6 @@ class Calculadora {
 fun main() {
     val calculadora = Calculadora()
     val scanner = Scanner(System.`in`)
-    val modifiedContent = StringBuilder()
     var exit = false
 
     while (!exit) {
@@ -120,10 +126,7 @@ fun main() {
                 print("Ingrese la expresión infix: ")
                 val expresion = scanner.nextLine()
                 if (expresion.isNotBlank()) {
-                    val postfixExpression: String = calculadora.infixToPostfix(expresion)
-                    val result = calculadora.evaluatePostfix(calculadora.stringToList(postfixExpression))
-                    modifiedContent.append(postfixExpression).append("\n")
-                    println("Resultado: $result")
+                    calculadora.evaluate(expresion)
                 } else {
                     println("Expresión vacía. Intente de nuevo.")
                 }
