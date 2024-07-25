@@ -29,4 +29,16 @@ class CalculadoraTest {
         val result = calculadora.evaluatePostfix(calculadora.stringToList(postfixExpression))
         assertEquals(212.0, result)
     }
+
+    @Test
+    fun testEvaluateWithParentheses() {
+        val calculadora = Calculadora()
+        val infixExpression = "100 * ( 2 + 12 )"
+        val postfixExpression = calculadora.infixToPostfix(infixExpression)
+        val result = calculadora.evaluatePostfix(calculadora.stringToList(postfixExpression))
+        assertEquals(1400.0, result)
+    }
+
+
+
 }
