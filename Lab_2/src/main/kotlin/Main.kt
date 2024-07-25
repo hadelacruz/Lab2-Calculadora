@@ -1,25 +1,93 @@
-package org.example
-
+import java.util.Scanner
 import java.util.Stack
-import kotlin.math.*
-class CalculadoraCientifica{
-    //Método para evaluar la Expresión Infix
-    fun evaluateInfix(expression: String): Double{
-        return 0.0
+
+object Converter {
+
+    /**
+     * Método para determinar la precedencia de un operador.
+     *
+     * @param c El operador cuya precedencia se desea conocer.
+     * @return El nivel de precedencia del operador, o -1 si el operador no es reconocido.
+     */
+    fun precedence(c: Char): Int {
+        return when (c) {
+            '+', '-' -> 1
+            '*', '/' -> 2
+            '^' -> 3
+            else -> -1
+        }
     }
 
-    // Método para convertir de infix a postFix
-    fun infixToPostfix(expression: String): List<String>{
-        return mutableListOf<String>()
+    /**
+     * Convierte una expresión infix a postfix.
+     *
+     * @param expresion La expresión en formato infix.
+     * @return La expresión convertida en formato postfix.
+     */
+    fun infixToPostfix(expresion: String): String {
+        val result = StringBuilder()
+        val stack = Stack<Char>()
+
+        val cleanedExpression = expresion.replace("\\s+".toRegex(), "")
+
+        var i = 0
+        while (i < cleanedExpression.length) {
+            val c = cleanedExpression[i]
+
+            if (c.isLetterOrDigit()) {
+                while (i < cleanedExpression.length && cleanedExpression[i].isLetterOrDigit()) {
+                    result.append(cleanedExpression[i])
+                    i++
+                }
+                result.append(' ')
+                i--
+            } else if (c == '(') {
+                stack.push(c)
+            } else if (c == ')') {
+                while (!stack.isEmpty() && stack.peek() != '(')
+                    result.append(stack.pop()).append(' ')
+                if (!stack.isEmpty() && stack.peek() != '(') {
+                    return "Invalid Expression" // expresión inválida
+                } else {
+                    stack.pop()
+                }
+            } else {
+                while (!stack.isEmpty() && precedence(c) <= precedence(stack.peek()))
+                    result.append(stack.pop()).append(' ')
+                stack.push(c)
+            }
+            i++
+        }
+
+        while (!stack.isEmpty()) {
+            if (stack.peek() == '(')
+                return "Invalid Expression" // expresión inválida
+            result.append(stack.pop()).append(' ')
+        }
+
+        return result.toString().trim()
     }
 
-    // Método para evaluar la operación Postfix
-    fun evaluatePostfix(postfix: List<String>): Double{
-        return 0.0
+    /**
+     * Lee expresiones infix desde la terminal, las convierte a postfix y devuelve el contenido modificado.
+     */
+    @JvmStatic
+    fun main(args: Array<String>) {
+        val scanner = Scanner(System.`in`)
+        val modifiedContent = StringBuilder()
+
+        print("Ingrese las expresiones infix presione 'Enter' 2 veces para convertir a postfix: ")
+
+        while (true) {
+            val expresion = scanner.nextLine()
+            if (expresion.isBlank()) {
+                break
+            }
+            val postfixExpression = infixToPostfix(expresion)
+            modifiedContent.append(postfixExpression).append("\n")
+        }
+
+        println("Expresiones en formato postfix:")
+        println(modifiedContent.toString())
     }
-
-}
-
-fun main() {
-    println("Hello World!")
 }
