@@ -4,6 +4,15 @@ import org.junit.jupiter.api.Test
 class CalculadoraTest {
 
     @Test
+    fun testEvaluateComplexExpression3() {
+        val calculadora = Calculadora()
+        val infixExpression = "( 3 + 4 ) * 5 - 2 ^ 3"
+        val postfixExpression = calculadora.infixToPostfix(infixExpression)
+        val result = calculadora.evaluatePostfix(calculadora.stringToList(postfixExpression))
+        assertEquals(27.0, result)
+    }
+
+    @Test
     fun testEvaluateSimpleAddition() {
         val calculadora = Calculadora()
         val infixExpression = "3 + 4"
