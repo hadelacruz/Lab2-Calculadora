@@ -1,6 +1,8 @@
 import java.util.Scanner
 import java.util.Stack
 import kotlin.math.*
+import kotlin.system.exitProcess
+
 
 class Calculadora {
 
@@ -25,49 +27,56 @@ class Calculadora {
      * @param expresion La expresión en formato infix.
      * @return La expresión convertida en formato postfix.
      */
+
     fun infixToPostfix(expresion: String): String {
         val result = StringBuilder()
         val stack = Stack<Char>()
 
-        val cleanedExpression = expresion.replace("\\s+".toRegex(), "")
+        try {
+            val cleanedExpression = expresion.replace("\\s+".toRegex(), "")
 
-        var i = 0
-        while (i < cleanedExpression.length) {
-            val c = cleanedExpression[i]
+            var i = 0
+            while (i < cleanedExpression.length) {
+                val c = cleanedExpression[i]
 
-            if (c.isLetterOrDigit()) {
-                while (i < cleanedExpression.length && cleanedExpression[i].isLetterOrDigit()) {
-                    result.append(cleanedExpression[i])
-                    i++
-                }
-                result.append(' ')
-                i--
-            } else if (c == '(') {
-                stack.push(c)
-            } else if (c == ')') {
-                while (!stack.isEmpty() && stack.peek() != '(')
-                    result.append(stack.pop()).append(' ')
-                if (!stack.isEmpty() && stack.peek() != '(') {
-                    return "Invalid Expression" // expresión inválida
+                if (c.isLetterOrDigit()) {
+                    while (i < cleanedExpression.length && cleanedExpression[i].isLetterOrDigit()) {
+                        result.append(cleanedExpression[i])
+                        i++
+                    }
+                    result.append(' ')
+                    i--
+                } else if (c == '(') {
+                    stack.push(c)
+                } else if (c == ')') {
+                    while (!stack.isEmpty() && stack.peek() != '(')
+                        result.append(stack.pop()).append(' ')
+                    if (!stack.isEmpty() && stack.peek() != '(') {
+                        throw IllegalArgumentException("Invalid Expression") // expresión inválida
+                    } else {
+                        stack.pop()
+                    }
                 } else {
-                    stack.pop()
+                    while (!stack.isEmpty() && precedence(c) <= precedence(stack.peek()))
+                        result.append(stack.pop()).append(' ')
+                    stack.push(c)
                 }
-            } else {
-                while (!stack.isEmpty() && precedence(c) <= precedence(stack.peek()))
-                    result.append(stack.pop()).append(' ')
-                stack.push(c)
+                i++
             }
-            i++
-        }
 
-        while (!stack.isEmpty()) {
-            if (stack.peek() == '(')
-                return "Invalid Expression" // expresión inválida
-            result.append(stack.pop()).append(' ')
-        }
+            while (!stack.isEmpty()) {
+                if (stack.peek() == '(')
+                    throw IllegalArgumentException("Invalid Expression") // expresión inválida
+                result.append(stack.pop()).append(' ')
+            }
 
-        return result.toString().trim()
+            return result.toString().trim()
+        } catch (e: Exception) {
+            println("Expresión inválida, vuelve a ejecutar el programa")
+            exitProcess(1) // Terminar el programa con código de error
+        }
     }
+
 
     fun stringToList(expression: String): List<String> {
         return expression.split(" ").filter { it.isNotEmpty() }
