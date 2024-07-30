@@ -2,7 +2,12 @@ import java.util.Scanner
 import java.util.Stack
 import kotlin.math.*
 import kotlin.system.exitProcess
-
+/*
+Humberto Alexander de la Cruz - 23735
+Jose Gerardo Ruiz - 23719
+Gerardo Fernández Cruz - 23763
+Fecha: 29/07/2024
+* */
 
 class Calculadora {
 
@@ -106,6 +111,8 @@ class Calculadora {
         return stack.pop()
     }
 
+    /*Método que evalua la expresión infix
+    * */
     fun evaluate(expresion: String){
         val modifiedContent = StringBuilder()
         val postfixExpression: String = infixToPostfix(expresion)
